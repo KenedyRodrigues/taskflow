@@ -69,7 +69,7 @@ Verificação manual: cadastrar, confirmar e-mail, entrar, criar tarefa com e se
 
 Alternativa pelo terminal: `npx vercel login`, `npx vercel link`, `npx vercel env add NEXT_PUBLIC_SUPABASE_URL production`, `npx vercel env add NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY production`, `npx vercel --prod`. As variáveis públicas são resolvidas no build: alterações exigem novo deploy.
 
-A publicação requer acesso à sua conta Vercel e a configuração do projeto Supabase. Nenhum endereço público é presumido por este repositório.
+A publicação requer acesso à sua conta Vercel e a configuração do projeto Supabase. Deploy de produção: https://taskflow-self-six.vercel.app. Configure esse endereço em Authentication → URL Configuration do Supabase, como Site URL e Redirect URL.
 
 ## Estrutura
 
