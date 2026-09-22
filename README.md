@@ -1,4 +1,4 @@
-## TaskFlow
+# TaskFlow
 
 AplicaÃ§Ã£o de tarefas pessoais com **Next.js 16, React 19, TypeScript e Supabase**. Login obrigatÃ³rio, dados isolados por usuÃ¡rio, imagens e Ã¡udios privados e estatÃ­sticas por status.
 
