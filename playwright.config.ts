@@ -1,10 +1,16 @@
-﻿import { defineConfig } from "@playwright/test";
+import { defineConfig } from "@playwright/test";
+import { loadEnvFile } from "node:process";
+try {
+  loadEnvFile(".env.local");
+} catch {}
 export default defineConfig({
   testDir: "./tests",
-  use: { baseURL: "http://127.0.0.1:3000", headless: true },
+  testMatch: "**/*.spec.ts",
+  workers: 1,
+  use: { baseURL: "http://127.0.0.1:3100", headless: true },
   webServer: {
-    command: "npm run dev -- --hostname 127.0.0.1",
-    url: "http://127.0.0.1:3000",
+    command: "npm run dev -- --hostname 127.0.0.1 --port 3100",
+    url: "http://127.0.0.1:3100/login",
     reuseExistingServer: !process.env.CI,
   },
   projects: [
