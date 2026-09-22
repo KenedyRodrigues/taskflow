@@ -73,6 +73,31 @@ try {
   const read = await a.storage.from(bucket).download(path);
   assert.ifError(read.error);
   assert.equal(read.data.size, bytes.length);
+  const videoBytes = Buffer.from([
+    0x1a, 0x45, 0xdf, 0xa3, 0x9f, 0x42, 0x86, 0x81,
+  ]);
+  const videoPath =
+    first.data.user.id + "/" + taskId + "/" + crypto.randomUUID() + ".webm";
+  const videoAttachment = await a
+    .from("task_attachments")
+    .insert({
+      task_id: taskId,
+      name: "teste.webm",
+      mime_type: "video/webm",
+      size: videoBytes.length,
+      path: videoPath,
+    })
+    .select()
+    .single();
+  assert.ifError(videoAttachment.error);
+  reservations.push(videoAttachment.data);
+  const videoUpload = await a.storage
+    .from(bucket)
+    .upload(videoPath, videoBytes, { contentType: "video/webm" });
+  assert.ifError(videoUpload.error);
+  const videoRead = await a.storage.from(bucket).download(videoPath);
+  assert.ifError(videoRead.error);
+  assert.equal(videoRead.data.size, videoBytes.length);
   assert.ok(
     (await b.storage.from(bucket).download(path)).error,
     "B não pode baixar o arquivo A",
@@ -135,7 +160,7 @@ try {
     ).error,
     "SVG não permitido",
   );
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 3; i++) {
     const r = await a
       .from("task_attachments")
       .insert({ ...row, path: path + "-" + i })
@@ -150,7 +175,7 @@ try {
     "Limite de 5 anexos",
   );
   console.log(
-    "OK: Storage privado, upload, leitura, isolamento entre contas, limites e proteção contra arquivos abandonados.",
+    "OK: Storage privado, imagem/vídeo, leitura, isolamento entre contas, limites e proteção contra arquivos abandonados.",
   );
 } finally {
   for (const row of reservations) {

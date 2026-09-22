@@ -120,7 +120,8 @@ export default function TaskMedia({
 
   const shown = compact
     ? [
-        attachments.find((item) => /^(image|video)\//.test(item.mime_type)),
+        attachments.find((item) => item.mime_type.startsWith("image/")),
+        attachments.find((item) => item.mime_type.startsWith("video/")),
         attachments.find((item) => item.mime_type.startsWith("audio/")),
       ].filter((item): item is Attachment => Boolean(item))
     : attachments;

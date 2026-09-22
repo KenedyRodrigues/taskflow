@@ -46,9 +46,43 @@ test("CRUD autenticado, anexos, estatísticas, menu e logout", async ({
     wav.writeUInt16LE(16, 34);
     wav.write("data", 36);
     wav.writeUInt32LE(2, 40);
+    const video = Buffer.from(
+      await page.evaluate(async () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = 96;
+        canvas.height = 54;
+        const context = canvas.getContext("2d")!;
+        const stream = canvas.captureStream(8);
+        const recorder = new MediaRecorder(stream, {
+          mimeType: "video/webm;codecs=vp8",
+        });
+        const chunks: Blob[] = [];
+        recorder.ondataavailable = (event) => {
+          if (event.data.size) chunks.push(event.data);
+        };
+        const stopped = new Promise<void>((resolve) => {
+          recorder.onstop = () => resolve();
+        });
+        recorder.start();
+        context.fillStyle = "#347c62";
+        context.fillRect(0, 0, 96, 54);
+        context.fillStyle = "white";
+        context.font = "bold 18px sans-serif";
+        context.fillText("TaskFlow", 8, 32);
+        await new Promise((resolve) => setTimeout(resolve, 350));
+        recorder.stop();
+        await stopped;
+        stream.getTracks().forEach((track) => track.stop());
+        const bytes = new Uint8Array(
+          await new Blob(chunks, { type: "video/webm" }).arrayBuffer(),
+        );
+        return Array.from(bytes);
+      }),
+    );
     await page.getByLabel("Adicionar arquivos", { exact: true }).setInputFiles([
       { name: "imagem.png", mimeType: "image/png", buffer: png },
       { name: "audio.wav", mimeType: "audio/wav", buffer: wav },
+      { name: "video.webm", mimeType: "video/webm", buffer: video },
     ]);
     await page
       .getByRole("button", { name: "Salvar tarefa", exact: true })
@@ -65,6 +99,7 @@ test("CRUD autenticado, anexos, estatísticas, menu e logout", async ({
     ).toBeVisible();
     await expect(card.locator("img")).toBeVisible({ timeout: 20000 });
     await expect(card.locator("audio")).toBeVisible({ timeout: 20000 });
+    await expect(card.locator("video")).toBeVisible({ timeout: 20000 });
     await card
       .getByRole("button", { name: "Abrir detalhes de " + name, exact: true })
       .click();
@@ -74,12 +109,14 @@ test("CRUD autenticado, anexos, estatísticas, menu e logout", async ({
     ).toBeVisible();
     await expect(details.locator("img")).toBeVisible({ timeout: 20000 });
     await expect(details.locator("audio")).toBeVisible({ timeout: 20000 });
+    await expect(details.locator("video")).toBeVisible({ timeout: 20000 });
     await details.getByRole("button", { name: "Fechar detalhes" }).click();
     await page
       .getByRole("button", { name: "Editar " + name, exact: true })
       .click();
     await expect(page.getByText("imagem.png", { exact: false })).toBeVisible();
     await expect(page.getByText("audio.wav", { exact: false })).toBeVisible();
+    await expect(page.getByText("video.webm", { exact: false })).toBeVisible();
     while (
       await page
         .getByRole("button", { name: "Abrir prévia", exact: true })
@@ -91,6 +128,7 @@ test("CRUD autenticado, anexos, estatísticas, menu e logout", async ({
         .click();
     await expect(page.getByRole("dialog").locator("img")).toBeVisible();
     await expect(page.getByRole("dialog").locator("audio")).toBeVisible();
+    await expect(page.getByRole("dialog").locator("video")).toBeVisible();
     await page
       .getByRole("combobox", { name: "Status", exact: true })
       .selectOption("done");
