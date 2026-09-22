@@ -21,7 +21,7 @@ O registro nasce antes do upload. Se a conexão cair, ele pode ficar sem objeto;
 
 ## Storage
 
-Bucket task-attachments privado, limite de 20 MB e lista fechada de MIME types. Upload só pode ocorrer para um registro reservado pelo usuário, com tamanho e MIME iguais aos declarados. Não há política de UPDATE; arquivos não são sobrescritos.
+Bucket task-attachments privado, limite de 20 MB e lista fechada de MIME types. Upload só pode ocorrer para um registro reservado pelo usuário, com a propriedade verificada antes do envio. Um trigger confere tamanho e MIME reais contra a reserva quando o Storage grava o objeto conclu?do. Não há política de UPDATE; arquivos não são sobrescritos.
 
 A política de SELECT exige registro e proprietário correspondentes. DELETE permite remover objetos na pasta do próprio usuário, inclusive em tentativas de limpeza.
 

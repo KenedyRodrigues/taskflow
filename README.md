@@ -42,8 +42,9 @@ No SQL Editor do Supabase, aplique **na ordem, uma vez cada**:
 
 1. [Tabela tasks e RLS](supabase/migrations/202609210001_tasks.sql).
 2. [Anexos e Storage privado](supabase/migrations/202609220001_attachments.sql).
+3. [Valida??o de uploads](supabase/migrations/202609220002_storage_upload_validation.sql).
 
-Se você já usa a versão original, execute **somente a segunda migração**. Ela preserva as tarefas existentes.
+Se você já usa a versão original, execute **somente a segunda migração**. Elas preservam as tarefas existentes.
 
 Em Authentication, habilite Email e configure:
 

@@ -101,5 +101,8 @@ try {
     if (cleanup.error)
       console.error("Falha ao limpar tarefa de teste:", cleanup.error.message);
   }
-  await Promise.all([a.auth.signOut(), b.auth.signOut()]);
+  await Promise.all([
+    a.auth.signOut({ scope: "local" }),
+    b.auth.signOut({ scope: "local" }),
+  ]);
 }

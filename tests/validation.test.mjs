@@ -41,3 +41,46 @@ test("anexos validam tipo, tamanho, nome e limites distintos", () => {
   ])
     assert.throws(() => attachmentInput(input));
 });
+
+import { assertSameOrigin } from "../src/backend/validation/origin.ts";
+test("origem compara o host público sem aceitar requisições de outro site", () => {
+  assert.doesNotThrow(() =>
+    assertSameOrigin(
+      new Request("http://localhost:3100/api/tasks", {
+        method: "POST",
+        headers: { host: "127.0.0.1:3100", origin: "http://127.0.0.1:3100" },
+      }),
+    ),
+  );
+  assert.doesNotThrow(() =>
+    assertSameOrigin(
+      new Request("http://internal/api/tasks", {
+        method: "POST",
+        headers: {
+          host: "taskflow.example.com",
+          origin: "https://taskflow.example.com",
+          "x-forwarded-proto": "https",
+        },
+      }),
+    ),
+  );
+  assert.throws(() =>
+    assertSameOrigin(
+      new Request("https://taskflow.example.com/api/tasks", {
+        method: "POST",
+        headers: {
+          host: "taskflow.example.com",
+          origin: "https://evil.example.com",
+        },
+      }),
+    ),
+  );
+  assert.throws(() =>
+    assertSameOrigin(
+      new Request("https://taskflow.example.com/api/tasks", {
+        method: "POST",
+        headers: { "sec-fetch-site": "cross-site" },
+      }),
+    ),
+  );
+});

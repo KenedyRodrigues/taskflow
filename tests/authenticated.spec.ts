@@ -26,7 +26,9 @@ test("CRUD autenticado, anexos, estatísticas, menu e logout", async ({
     await page
       .getByLabel("Descrição", { exact: false })
       .fill("Descrição de teste");
-    await page.getByLabel("Status", { exact: true }).selectOption("doing");
+    await page
+      .getByRole("combobox", { name: "Status", exact: true })
+      .selectOption("doing");
     const png = Buffer.from(
       "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aO9sAAAAASUVORK5CYII=",
       "base64",
@@ -66,7 +68,9 @@ test("CRUD autenticado, anexos, estatísticas, menu e logout", async ({
       await button.click();
     await expect(page.getByRole("dialog").locator("img")).toBeVisible();
     await expect(page.getByRole("dialog").locator("audio")).toBeVisible();
-    await page.getByLabel("Status", { exact: true }).selectOption("done");
+    await page
+      .getByRole("combobox", { name: "Status", exact: true })
+      .selectOption("done");
     await page
       .getByRole("button", { name: "Salvar tarefa", exact: true })
       .click();
@@ -128,13 +132,18 @@ test("CRUD autenticado, anexos, estatísticas, menu e logout", async ({
     await page.goto("/tasks");
     await expect(page).toHaveURL(/\/login$/);
   } finally {
-    if (taskId) await page.request.delete("/api/tasks/" + taskId);
-    // A failed upload may save the task before the UI closes; cleanup by its unique title.
-    const response = await page.request.get("/api/tasks");
-    if (response.ok()) {
-      for (const task of await response.json())
-        if (task.title === name)
-          await page.request.delete("/api/tasks/" + task.id);
+    // Cleanup must not hide the original UI assertion failure.
+    try {
+      if (taskId) await page.request.delete("/api/tasks/" + taskId);
+      // A failed upload may save the task before the UI closes; cleanup by its unique title.
+      const response = await page.request.get("/api/tasks");
+      if (response.ok()) {
+        for (const task of await response.json())
+          if (task.title === name)
+            await page.request.delete("/api/tasks/" + task.id);
+      }
+    } catch {
+      /* A timed-out context may already be closed. */
     }
   }
 });
