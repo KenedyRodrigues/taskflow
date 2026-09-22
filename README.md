@@ -12,6 +12,7 @@ AplicaÃ§Ã£o de tarefas pessoais com **Next.js 16, React 19, TypeScript e Sup
 - Rotas protegidas no servidor; visitantes sÃ£o direcionados para login.
 - CRUD de tarefas: tÃ­tulo obrigatÃ³rio, descriÃ§Ã£o opcional e status a fazer/em andamento/concluÃ­da.
 - Busca, filtro por status e conclusÃ£o/reabertura.
+- Visualização em lista ou Kanban, com arrastar e soltar entre os status.
 - AtÃ© cinco anexos opcionais por tarefa: imagens JPEG/PNG/WebP (5 MB) e Ã¡udios MP3/M4A/WAV/OGG (20 MB).
 - Storage privado, prÃ©via de imagens e reproduÃ§Ã£o de Ã¡udio por links temporÃ¡rios.
 - Menu lateral retrÃ¡til, preferÃªncia persistida e navegaÃ§Ã£o mÃ³vel.

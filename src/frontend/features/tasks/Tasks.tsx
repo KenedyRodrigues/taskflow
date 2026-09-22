@@ -10,6 +10,8 @@ import {
   Pencil,
   Trash2,
   LoaderCircle,
+  List,
+  Columns3,
 } from "lucide-react";
 import { api } from "@/frontend/lib/api";
 import {
@@ -20,7 +22,9 @@ import {
 } from "@/frontend/lib/types";
 import { useTasks } from "@/frontend/hooks/useTasks";
 import TaskEditor from "./TaskEditor";
+import KanbanBoard from "./KanbanBoard";
 const icons = { todo: Circle, doing: Clock3, done: CheckCircle2 };
+type ViewMode = "list" | "kanban";
 export default function Tasks() {
   const { tasks, setTasks, loading, error: loadError, refresh } = useTasks();
   const [filter, setFilter] = useState<Status | "all">("all"),
@@ -29,12 +33,17 @@ export default function Tasks() {
     [deleting, setDeleting] = useState<Task | null>(null),
     [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
-    [notice, setNotice] = useState("");
+    [notice, setNotice] = useState(""),
+    [view, setView] = useState<ViewMode>("list");
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     if (deleting) dialog.current?.showModal();
     else dialog.current?.close();
   }, [deleting]);
+  useEffect(() => {
+    const saved = localStorage.getItem("taskflow:task-view");
+    if (saved === "kanban") setView("kanban");
+  }, []);
   const counts = {
     todo: tasks.filter((t) => t.status === "todo").length,
     doing: tasks.filter((t) => t.status === "doing").length,
@@ -48,18 +57,33 @@ export default function Tasks() {
         .includes(query.toLocaleLowerCase("pt-BR")),
   );
   async function toggle(task: Task) {
+    await move(task, task.status === "done" ? "todo" : "done");
+  }
+  async function move(task: Task, status: Status) {
+    if (task.status === status) return;
     setBusy(true);
     setError("");
+    const previous = task.status;
+    setTasks((current) =>
+      current.map((item) => (item.id === task.id ? { ...item, status } : item)),
+    );
     try {
       const saved = await api<Task>("/api/tasks/" + task.id, {
         method: "PATCH",
-        body: JSON.stringify({
-          ...task,
-          status: task.status === "done" ? "todo" : "done",
-        }),
+        body: JSON.stringify({ ...task, status }),
       });
-      setTasks((current) => current.map((t) => (t.id === task.id ? saved : t)));
+      setTasks((current) =>
+        current.map((item) => (item.id === task.id ? saved : item)),
+      );
+      setNotice(
+        `Tarefa movida para ${labels[status].toLocaleLowerCase("pt-BR")}.`,
+      );
     } catch (err) {
+      setTasks((current) =>
+        current.map((item) =>
+          item.id === task.id ? { ...item, status: previous } : item,
+        ),
+      );
       setError(errorMessage(err));
     } finally {
       setBusy(false);
@@ -127,8 +151,33 @@ export default function Tasks() {
       </section>
       <section className="task-section" aria-label="Lista de tarefas">
         <div className="list-heading">
-          <h2>Suas tarefas</h2>
-          <span>{tasks.length} tarefas</span>
+          <div>
+            <h2>{view === "list" ? "Suas tarefas" : "Quadro Kanban"}</h2>
+            <span>{tasks.length} tarefas</span>
+          </div>
+          <div className="view-switch" aria-label="Modo de visualização">
+            <button
+              aria-pressed={view === "list"}
+              onClick={() => {
+                setView("list");
+                localStorage.setItem("taskflow:task-view", "list");
+              }}
+            >
+              <List size={15} />
+              Lista
+            </button>
+            <button
+              aria-pressed={view === "kanban"}
+              onClick={() => {
+                setView("kanban");
+                setFilter("all");
+                localStorage.setItem("taskflow:task-view", "kanban");
+              }}
+            >
+              <Columns3 size={15} />
+              Kanban
+            </button>
+          </div>
         </div>
         <div className="toolbar">
           <div className="filters" aria-label="Filtrar por status">
@@ -154,17 +203,30 @@ export default function Tasks() {
             />
           </label>
         </div>
-        <div className="table-head">
-          <span>TAREFA</span>
-          <span>STATUS</span>
-          <span>CRIADA EM</span>
-          <span className="sr-only">Ações</span>
-        </div>
+        {view === "list" && (
+          <div className="table-head">
+            <span>TAREFA</span>
+            <span>STATUS</span>
+            <span>CRIADA EM</span>
+            <span className="sr-only">Ações</span>
+          </div>
+        )}
         {loading ? (
           <div className="empty" role="status">
             <LoaderCircle className="spin" />
             <p>Carregando tarefas…</p>
           </div>
+        ) : visible.length && view === "kanban" ? (
+          <KanbanBoard
+            tasks={visible}
+            busy={busy}
+            onMove={move}
+            onEdit={setEditor}
+            onDelete={(task) => {
+              setError("");
+              setDeleting(task);
+            }}
+          />
         ) : visible.length ? (
           visible.map((task) => {
             const Icon = icons[task.status];

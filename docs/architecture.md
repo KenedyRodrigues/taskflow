@@ -31,6 +31,8 @@ A versão anterior armazenava sessões no localStorage. Usuários podem precisar
 
 O frontend acessa /api/tasks para CRUD. As APIs utilizam o token do próprio usuário, sem service_role. O Postgres aplica RLS a todas as operações. A leitura pagina o banco internamente em lotes de 1.000 para não truncar os contadores no limite padrão da API.
 
+A visualização das tarefas pode alternar entre lista e Kanban. O modo escolhido fica salvo no navegador. Ao mover um cartão entre colunas, a interface atualiza imediatamente e envia o novo status à mesma API protegida; se a operação falhar, o cartão retorna à coluna anterior. Em telas touch, o cartão também oferece um seletor de status.
+
 As estatísticas refletem as tarefas atuais: não são um histórico diário. Excluir ou reabrir uma tarefa altera os números.
 
 ## Upload

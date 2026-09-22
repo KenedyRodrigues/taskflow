@@ -1,4 +1,4 @@
-﻿import { test, expect } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 test("tarefa sem anexos, filtros, estatísticas e logout", async ({
   page,
 }, info) => {
@@ -32,16 +32,37 @@ test("tarefa sem anexos, filtros, estatísticas e logout", async ({
     await expect(
       page.getByRole("heading", { name, exact: true }),
     ).toBeVisible();
-    await page
-      .getByRole("button", { name: "Concluir " + name, exact: true })
-      .click();
+    await page.getByRole("button", { name: "Kanban", exact: true }).click();
+    const card = page.locator(".kanban-card").filter({ hasText: name });
+    const doneColumn = page.getByRole("region", { name: "Concluída" });
+    await expect(card).toBeVisible();
+    if (info.project.name === "desktop") await card.dragTo(doneColumn);
+    else
+      await card
+        .getByRole("combobox", { name: "Mover " + name })
+        .selectOption("done");
+    await expect(
+      doneColumn.getByRole("heading", { name, exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByText("Tarefa movida para concluída.", { exact: true }),
+    ).toBeVisible();
+    await page.reload();
+    await expect(
+      page.getByRole("button", { name: "Kanban", exact: true }),
+    ).toHaveAttribute("aria-pressed", "true");
+    await expect(
+      page
+        .getByRole("region", { name: "Concluída" })
+        .getByRole("heading", { name, exact: true }),
+    ).toBeVisible();
+    await page.getByRole("button", { name: "Lista", exact: true }).click();
     await expect(
       page
         .locator(".task-row")
         .filter({ hasText: name })
         .getByText("Concluída", { exact: true }),
     ).toBeVisible();
-    await page.reload();
     if (info.project.name === "mobile")
       await page.getByRole("button", { name: "Abrir menu" }).click();
     await page.getByRole("link", { name: "Estatísticas", exact: true }).click();
