@@ -31,7 +31,7 @@ Copy-Item .env.example .env.local
 
 Preencha as variÃ¡veis pÃºblicas:
 
-| VariÃ¡vel                             | Valor                            |
+| VariÃ¡vel                            | Valor                            |
 | ------------------------------------ | -------------------------------- |
 | NEXT_PUBLIC_SUPABASE_URL             | URL do projeto Supabase          |
 | NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY | Publishable key (ou anon legada) |
@@ -43,6 +43,7 @@ No SQL Editor do Supabase, aplique **na ordem, uma vez cada**:
 1. [Tabela tasks e RLS](supabase/migrations/202609210001_tasks.sql).
 2. [Anexos e Storage privado](supabase/migrations/202609220001_attachments.sql).
 3. [Valida??o de uploads](supabase/migrations/202609220002_storage_upload_validation.sql).
+4. [Compatibilidade do upload no navegador](supabase/migrations/202609220004_storage_browser_compatibility.sql).
 
 Se vocÃª jÃ¡ usa a versÃ£o original, execute **somente a segunda migraÃ§Ã£o**. Elas preservam as tarefas existentes.
 
@@ -80,14 +81,14 @@ As duas Ã¡reas principais sÃ£o backend e frontend. src/app Ã© mantida sepa
 | Comando              | Objetivo                                        |
 | -------------------- | ----------------------------------------------- |
 | npm run dev          | Desenvolvimento                                 |
-| npm run build        | Build de produÃ§Ã£o e checagem de tipos           |
+| npm run build        | Build de produÃ§Ã£o e checagem de tipos         |
 | npm run start        | Servir o build                                  |
 | npm run test:unit    | Valida??o de dados e limites de anexos          |
 | npm run typecheck    | TypeScript                                      |
 | npm test             | Playwright desktop/celular                      |
 | npm run test:rls     | CRUD e isolamento de tarefas em duas contas     |
 | npm run test:storage | Isolamento e limites de anexos no Supabase real |
-| npm run format       | FormataÃ§Ã£o                                      |
+| npm run format       | FormataÃ§Ã£o                                    |
 
 Antes do Playwright, execute `npx playwright install chromium`. Os testes usam a porta 3100.
 

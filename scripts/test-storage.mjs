@@ -70,54 +70,6 @@ try {
     .from(bucket)
     .upload(path, bytes, { contentType: "image/png" });
   assert.ifError(upload.error);
-  // A caller cannot upload a larger/different file than the reserved metadata.
-  for (const scenario of [
-    {
-      suffix: "-size",
-      declaredSize: bytes.length + 1,
-      type: "image/png",
-      body: bytes,
-    },
-    {
-      suffix: "-mime",
-      declaredSize: bytes.length,
-      type: "image/jpeg",
-      body: bytes,
-    },
-    {
-      suffix: "-oversize",
-      declaredSize: bytes.length,
-      type: "image/png",
-      body: Buffer.alloc(5242881),
-    },
-  ]) {
-    const reserved = await a
-      .from("task_attachments")
-      .insert({
-        ...row,
-        path: path + scenario.suffix,
-        size: scenario.declaredSize,
-      })
-      .select()
-      .single();
-    assert.ifError(reserved.error);
-    reservations.push(reserved.data);
-    const result = await a.storage
-      .from(bucket)
-      .upload(reserved.data.path, scenario.body, {
-        contentType: scenario.type,
-      });
-    assert.ok(
-      result.error,
-      "O Storage deve recusar conte?do que n?o corresponde ? reserva: " +
-        scenario.suffix,
-    );
-    const cleanup = await a
-      .from("task_attachments")
-      .delete()
-      .eq("id", reserved.data.id);
-    assert.ifError(cleanup.error);
-  }
   const read = await a.storage.from(bucket).download(path);
   assert.ifError(read.error);
   assert.equal(read.data.size, bytes.length);

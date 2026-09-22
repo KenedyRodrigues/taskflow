@@ -9,11 +9,11 @@
 
 ## URLs
 
-| Ambiente          | URL                                                |
-| ----------------- | -------------------------------------------------- |
-| Site local        | http://localhost:3000                              |
-| Callback local    | http://localhost:3000/auth/callback                |
-| Callback de teste | http://127.0.0.1:3100/auth/callback                |
+| Ambiente            | URL                                                |
+| ------------------- | -------------------------------------------------- |
+| Site local          | http://localhost:3000                              |
+| Callback local      | http://localhost:3000/auth/callback                |
+| Callback de teste   | http://127.0.0.1:3100/auth/callback                |
 | Site produÃ§Ã£o     | https://taskflow-self-six.vercel.app               |
 | Callback produÃ§Ã£o | https://taskflow-self-six.vercel.app/auth/callback |
 
