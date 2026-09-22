@@ -106,7 +106,6 @@ export default function TaskEditor({
               upsert: false,
             });
           if (error) throw error;
-          await api("/api/attachments/" + record.id);
         } catch (err) {
           try {
             await api("/api/attachments/" + record.id, { method: "DELETE" });
@@ -115,7 +114,10 @@ export default function TaskEditor({
               "Upload incompleto. Remova o anexo pendente antes de tentar novamente.",
             );
           }
-          throw err;
+          setError(
+            "Tarefa salva, mas este arquivo foi rejeitado. Voc? pode remov?-lo ou tentar outro formato.",
+          );
+          continue;
         }
         setFiles((current) => current.filter((item) => item !== file));
         setAttachments((current) => [...current, record]);
