@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { ImageIcon, Music2, Trash2, RefreshCw } from "lucide-react";
+import { ImageIcon, Music2, Trash2, RefreshCw, Video } from "lucide-react";
 import { api } from "@/frontend/lib/api";
 import type { Attachment } from "@/frontend/lib/types";
 export function AttachmentItem({
@@ -34,6 +34,8 @@ export function AttachmentItem({
       <div className="attachment-title">
         {attachment.mime_type.startsWith("image/") ? (
           <ImageIcon size={18} />
+        ) : attachment.mime_type.startsWith("video/") ? (
+          <Video size={18} />
         ) : (
           <Music2 size={18} />
         )}
@@ -77,6 +79,18 @@ export function AttachmentItem({
             onError={() => {
               setUrl("");
               setError("Link expirado. Abra a prévia novamente.");
+            }}
+          />
+        ) : attachment.mime_type.startsWith("video/") ? (
+          <video
+            aria-label={attachment.name}
+            controls
+            playsInline
+            preload="metadata"
+            src={url + "#t=0.1"}
+            onError={() => {
+              setUrl("");
+              setError("Link expirado ou vídeo não suportado pelo navegador.");
             }}
           />
         ) : (

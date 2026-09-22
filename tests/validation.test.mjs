@@ -31,9 +31,18 @@ test("anexos validam tipo, tamanho, nome e limites distintos", () => {
     }).size,
     20971520,
   );
+  assert.equal(
+    attachmentInput({
+      name: "video.mp4",
+      mime_type: "video/mp4",
+      size: 20971520,
+    }).size,
+    20971520,
+  );
   for (const input of [
     { name: "x", mime_type: "image/png", size: 5242881 },
     { name: "x", mime_type: "audio/mpeg", size: 20971521 },
+    { name: "x", mime_type: "video/mp4", size: 20971521 },
     { name: "x", mime_type: "image/svg+xml", size: 10 },
     { name: "x", mime_type: "image/png", size: 0 },
     { name: "", mime_type: "image/png", size: 1 },

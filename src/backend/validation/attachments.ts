@@ -8,6 +8,9 @@ export const fileTypes: Record<string, { ext: string; limit: number }> = {
   "audio/wav": { ext: "wav", limit: 20 * 1024 * 1024 },
   "audio/x-wav": { ext: "wav", limit: 20 * 1024 * 1024 },
   "audio/ogg": { ext: "ogg", limit: 20 * 1024 * 1024 },
+  "video/mp4": { ext: "mp4", limit: 20 * 1024 * 1024 },
+  "video/webm": { ext: "webm", limit: 20 * 1024 * 1024 },
+  "video/quicktime": { ext: "mov", limit: 20 * 1024 * 1024 },
 };
 export function attachmentInput(input: unknown) {
   if (!input || typeof input !== "object") throw new Error("Arquivo inválido.");
@@ -26,6 +29,6 @@ export function attachmentInput(input: unknown) {
     data.size < 1 ||
     data.size > fileTypes[data.mime_type].limit
   )
-    throw new Error("Limite: imagens até 5 MB e áudios até 20 MB.");
+    throw new Error("Limite: imagens até 5 MB; áudios e vídeos até 20 MB.");
   return { name: data.name.trim(), mime_type: data.mime_type, size: data.size };
 }

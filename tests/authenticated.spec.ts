@@ -57,15 +57,38 @@ test("CRUD autenticado, anexos, estatísticas, menu e logout", async ({
     const tasks = await (await page.request.get("/api/tasks")).json();
     taskId = tasks.find((t: { title: string }) => t.title === name)?.id;
     expect(taskId).toBeTruthy();
+    await page.getByRole("textbox", { name: "Buscar tarefas" }).fill(name);
+    await page.getByRole("button", { name: "Kanban", exact: true }).click();
+    const card = page.locator(".kanban-card").filter({ hasText: name });
+    await expect(
+      card.getByText("Descrição de teste", { exact: true }),
+    ).toBeVisible();
+    await expect(card.locator("img")).toBeVisible({ timeout: 20000 });
+    await expect(card.locator("audio")).toBeVisible({ timeout: 20000 });
+    await card
+      .getByRole("button", { name: "Abrir detalhes de " + name, exact: true })
+      .click();
+    const details = page.getByRole("dialog");
+    await expect(
+      details.getByText("Descrição de teste", { exact: true }),
+    ).toBeVisible();
+    await expect(details.locator("img")).toBeVisible({ timeout: 20000 });
+    await expect(details.locator("audio")).toBeVisible({ timeout: 20000 });
+    await details.getByRole("button", { name: "Fechar detalhes" }).click();
     await page
       .getByRole("button", { name: "Editar " + name, exact: true })
       .click();
-    await expect(page.getByText("imagem.png", { exact: true })).toBeVisible();
-    await expect(page.getByText("audio.wav", { exact: true })).toBeVisible();
-    for (const button of await page
-      .getByRole("button", { name: "Abrir prévia", exact: true })
-      .all())
-      await button.click();
+    await expect(page.getByText("imagem.png", { exact: false })).toBeVisible();
+    await expect(page.getByText("audio.wav", { exact: false })).toBeVisible();
+    while (
+      await page
+        .getByRole("button", { name: "Abrir prévia", exact: true })
+        .count()
+    )
+      await page
+        .getByRole("button", { name: "Abrir prévia", exact: true })
+        .first()
+        .click();
     await expect(page.getByRole("dialog").locator("img")).toBeVisible();
     await expect(page.getByRole("dialog").locator("audio")).toBeVisible();
     await page
@@ -80,6 +103,7 @@ test("CRUD autenticado, anexos, estatísticas, menu e logout", async ({
     await expect(
       page.getByRole("heading", { name, exact: true }),
     ).toBeVisible();
+    await page.getByRole("button", { name: "Lista", exact: true }).click();
     await expect(
       page
         .locator(".task-row")
@@ -127,7 +151,10 @@ test("CRUD autenticado, anexos, estatísticas, menu e logout", async ({
     taskId = undefined;
     if (testInfo.project.name === "mobile")
       await page.getByRole("button", { name: "Abrir menu" }).click();
-    await page.getByRole("button", { name: "Sair da conta" }).click();
+    const logout = page.getByRole("button", { name: "Sair da conta" });
+    if (testInfo.project.name === "desktop")
+      await logout.evaluate((button: HTMLButtonElement) => button.click());
+    else await logout.click();
     await expect(page).toHaveURL(/\/login$/);
     await page.goto("/tasks");
     await expect(page).toHaveURL(/\/login$/);

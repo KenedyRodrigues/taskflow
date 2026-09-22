@@ -23,6 +23,7 @@ import {
 import { useTasks } from "@/frontend/hooks/useTasks";
 import TaskEditor from "./TaskEditor";
 import KanbanBoard from "./KanbanBoard";
+import TaskDetails from "./TaskDetails";
 const icons = { todo: Circle, doing: Clock3, done: CheckCircle2 };
 type ViewMode = "list" | "kanban";
 export default function Tasks() {
@@ -30,6 +31,7 @@ export default function Tasks() {
   const [filter, setFilter] = useState<Status | "all">("all"),
     [query, setQuery] = useState(""),
     [editor, setEditor] = useState<Task | "new" | null>(null),
+    [details, setDetails] = useState<Task | null>(null),
     [deleting, setDeleting] = useState<Task | null>(null),
     [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
@@ -221,6 +223,7 @@ export default function Tasks() {
             tasks={visible}
             busy={busy}
             onMove={move}
+            onOpen={setDetails}
             onEdit={setEditor}
             onDelete={(task) => {
               setError("");
@@ -249,7 +252,11 @@ export default function Tasks() {
                   >
                     {task.status === "done" && <Check size={14} />}
                   </button>
-                  <button className="task-text" onClick={() => setEditor(task)}>
+                  <button
+                    className="task-text"
+                    aria-label={"Abrir detalhes de " + task.title}
+                    onClick={() => setDetails(task)}
+                  >
                     <h3>{task.title}</h3>
                     {task.description && <p>{task.description}</p>}
                   </button>
@@ -319,6 +326,9 @@ export default function Tasks() {
         )}
         <div className="list-footer">{visible.length} tarefas exibidas</div>
       </section>
+      {details && (
+        <TaskDetails task={details} onClose={() => setDetails(null)} />
+      )}
       {editor && (
         <TaskEditor
           task={editor}

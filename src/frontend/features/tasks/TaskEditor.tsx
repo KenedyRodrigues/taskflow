@@ -12,7 +12,7 @@ import {
 } from "@/frontend/lib/types";
 import { AttachmentItem } from "./Attachments";
 const accepted =
-  "image/jpeg,image/png,image/webp,audio/mpeg,audio/mp4,audio/x-m4a,audio/wav,audio/x-wav,audio/ogg";
+  "image/jpeg,image/png,image/webp,audio/mpeg,audio/mp4,audio/x-m4a,audio/wav,audio/x-wav,audio/ogg,video/mp4,video/webm,video/quicktime";
 export default function TaskEditor({
   task,
   onClose,
@@ -65,7 +65,7 @@ export default function TaskEditor({
         !file.size ||
         file.size > (file.type.startsWith("image/") ? 5 : 20) * 1024 * 1024
       ) {
-        setError("Imagens: até 5 MB. Áudios: até 20 MB.");
+        setError("Imagens: até 5 MB. Áudios e vídeos: até 20 MB.");
         return;
       }
     }
@@ -115,7 +115,7 @@ export default function TaskEditor({
             );
           }
           setError(
-            "Tarefa salva, mas este arquivo foi rejeitado. Voc? pode remov?-lo ou tentar outro formato.",
+            "Tarefa salva, mas este arquivo foi rejeitado. Você pode removê-lo ou tentar outro formato.",
           );
           continue;
         }
@@ -200,12 +200,12 @@ export default function TaskEditor({
           </label>
           <fieldset className="attachments-field">
             <legend>
-              <Paperclip size={15} /> Imagens e áudios{" "}
+              <Paperclip size={15} /> Imagens, áudios e vídeos{" "}
               <span className="optional">opcional</span>
             </legend>
             <p>
               Até 5 arquivos. Imagens JPG, PNG ou WebP: 5 MB. Áudios MP3, M4A,
-              WAV ou OGG: 20 MB.
+              WAV ou OGG e vídeos MP4, WebM ou MOV: 20 MB.
             </p>
             {loading ? (
               <p role="status">Carregando anexos…</p>

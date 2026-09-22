@@ -10,6 +10,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { labels, type Status, type Task } from "@/frontend/lib/types";
+import TaskMedia from "./TaskMedia";
 
 const columns: Status[] = ["todo", "doing", "done"];
 const icons = { todo: Circle, doing: Clock3, done: CheckCircle2 };
@@ -18,6 +19,7 @@ type Props = {
   tasks: Task[];
   busy: boolean;
   onMove: (task: Task, status: Status) => Promise<void>;
+  onOpen: (task: Task) => void;
   onEdit: (task: Task) => void;
   onDelete: (task: Task) => void;
 };
@@ -26,6 +28,7 @@ export default function KanbanBoard({
   tasks,
   busy,
   onMove,
+  onOpen,
   onEdit,
   onDelete,
 }: Props) {
@@ -119,11 +122,13 @@ export default function KanbanBoard({
                   </div>
                   <button
                     className="kanban-card-text"
-                    onClick={() => onEdit(task)}
+                    aria-label={"Abrir detalhes de " + task.title}
+                    onClick={() => onOpen(task)}
                   >
                     <h3>{task.title}</h3>
                     {task.description && <p>{task.description}</p>}
                   </button>
+                  <TaskMedia taskId={task.id} compact />
                   <div className="kanban-card-bottom">
                     <time dateTime={task.created_at}>
                       {new Date(task.created_at).toLocaleDateString("pt-BR", {

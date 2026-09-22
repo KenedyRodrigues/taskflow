@@ -22,6 +22,9 @@ test("tarefa sem anexos, filtros, estatísticas e logout", async ({
       .click();
     await page.getByLabel("Título *", { exact: true }).fill(name);
     await page
+      .getByLabel("Descrição", { exact: false })
+      .fill("Descrição exibida nos detalhes");
+    await page
       .getByRole("combobox", { name: "Status", exact: true })
       .selectOption("doing");
     await page
@@ -32,10 +35,32 @@ test("tarefa sem anexos, filtros, estatísticas e logout", async ({
     await expect(
       page.getByRole("heading", { name, exact: true }),
     ).toBeVisible();
+    await page
+      .getByRole("button", { name: "Abrir detalhes de " + name, exact: true })
+      .click();
+    const details = page.getByRole("dialog");
+    await expect(
+      details.getByRole("heading", { name, exact: true }),
+    ).toBeVisible();
+    await expect(
+      details.getByText("Descrição exibida nos detalhes", { exact: true }),
+    ).toBeVisible();
+    await expect(details.getByRole("textbox")).toHaveCount(0);
+    await details.getByRole("button", { name: "Fechar detalhes" }).click();
     await page.getByRole("button", { name: "Kanban", exact: true }).click();
     const card = page.locator(".kanban-card").filter({ hasText: name });
     const doneColumn = page.getByRole("region", { name: "Concluída" });
     await expect(card).toBeVisible();
+    await expect(
+      card.getByText("Descrição exibida nos detalhes", { exact: true }),
+    ).toBeVisible();
+    await card
+      .getByRole("button", { name: "Abrir detalhes de " + name, exact: true })
+      .click();
+    await expect(
+      page.getByRole("dialog").getByRole("heading", { name, exact: true }),
+    ).toBeVisible();
+    await page.getByRole("button", { name: "Fechar detalhes" }).click();
     if (info.project.name === "desktop") await card.dragTo(doneColumn);
     else
       await card

@@ -1,4 +1,4 @@
-# Imagens e áudios
+# Imagens, áudios e vídeos
 
 ## Regras
 
@@ -6,12 +6,13 @@
 | -------- | ------------------ | -------------------------- |
 | Imagem   | JPEG, PNG, WebP    | 5 MB                       |
 | Áudio    | MP3, M4A, WAV, OGG | 20 MB                      |
+| Vídeo    | MP4, WebM, MOV     | 20 MB                      |
 
-Até cinco arquivos por tarefa, combinando imagens e áudios. Upload pelo seletor do dispositivo; gravação pelo microfone não está implementada. A compatibilidade de reprodução do áudio depende do navegador e do codec do arquivo.
+Até cinco arquivos por tarefa, combinando imagens, áudios e vídeos. Upload pelo seletor do dispositivo; gravação pelo microfone não está implementada. A compatibilidade de reprodução do áudio depende do navegador e do codec do arquivo.
 
 ## Uso
 
-Abra Nova tarefa ou Editar tarefa. Selecione arquivos no campo opcional e salve. Na edição, use Abrir prévia para ver a imagem ou o player. Renovar link gera um novo endereço temporário.
+Abra Nova tarefa ou Editar tarefa. Selecione arquivos no campo opcional e salve. Na edição, use Abrir prévia para ver a imagem, o vídeo ou o player de áudio. No Kanban, a primeira imagem ou vídeo e o primeiro áudio aparecem no cartão. Clicar no conteúdo do cartão abre uma visualização somente leitura com título, descrição e todos os arquivos; a edição abre apenas pelo botão de lápis. Renovar link gera um novo endereço temporário.
 
 Remover um anexo exige confirmação própria e é uma alteração imediata. Cancelar o formulário não restaura um anexo já removido.
 

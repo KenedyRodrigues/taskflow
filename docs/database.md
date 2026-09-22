@@ -31,3 +31,5 @@ A polÃ­tica de SELECT exige registro e proprietÃ¡rio correspondentes. DELETE
 - 202609220001_attachments.sql: anexos, limites, prevenÃ§Ã£o de Ã³rfÃ£os e Storage.
 
 NÃ£o altere uma migraÃ§Ã£o jÃ¡ aplicada para atualizar um ambiente. MudanÃ§as futuras exigem uma nova migraÃ§Ã£o. FaÃ§a backup e use um projeto separado para testes de schema.
+
+- 202609220005_video_attachments.sql: adiciona MP4, WebM e MOV aos anexos e ao bucket privado.

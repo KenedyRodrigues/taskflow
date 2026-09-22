@@ -23,7 +23,7 @@ O PKCE usa um verificador mantido no navegador que iniciou o cadastro. Abra a co
 
 ## Projeto existente
 
-NÃ£o reaplique a primeira migraÃ§Ã£o se tasks jÃ¡ existe. A segunda cria task_attachments, polÃ­ticas e o bucket task-attachments sem modificar tarefas existentes. As migraÃ§Ãµes sÃ£o transacionais e nÃ£o sÃ£o scripts de reset.
+NÃ£o reaplique a primeira migraÃ§Ã£o se tasks jÃ¡ existe. Execute as migraÃ§Ãµes restantes em ordem. A segunda cria task_attachments, polÃ­ticas e o bucket task-attachments; a sexta adiciona MP4, WebM e MOV sem modificar tarefas ou anexos existentes. As migraÃ§Ãµes sÃ£o transacionais e nÃ£o sÃ£o scripts de reset.
 
 ## DiagnÃ³stico
 

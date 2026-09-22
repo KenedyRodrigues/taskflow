@@ -4,7 +4,7 @@
 - [Arquitetura e fluxo de dados](architecture.md)
 - [Banco e migrações](database.md)
 - [Segurança e RLS](security.md)
-- [Imagens e áudios](attachments.md)
+- [Imagens, áudios e vídeos](attachments.md)
 - [Testes e critérios de aceitação](testing.md)
 - [Deploy e configuração de produção](deployment.md)
 - [Uso de IA](ai-usage.md)

@@ -13,8 +13,8 @@ AplicaÃ§Ã£o de tarefas pessoais com **Next.js 16, React 19, TypeScript e Sup
 - CRUD de tarefas: tÃ­tulo obrigatÃ³rio, descriÃ§Ã£o opcional e status a fazer/em andamento/concluÃ­da.
 - Busca, filtro por status e conclusÃ£o/reabertura.
 - Visualização em lista ou Kanban, com arrastar e soltar entre os status.
-- AtÃ© cinco anexos opcionais por tarefa: imagens JPEG/PNG/WebP (5 MB) e Ã¡udios MP3/M4A/WAV/OGG (20 MB).
-- Storage privado, prÃ©via de imagens e reproduÃ§Ã£o de Ã¡udio por links temporÃ¡rios.
+- AtÃ© cinco anexos opcionais por tarefa: imagens JPEG/PNG/WebP (5 MB), Ã¡udios MP3/M4A/WAV/OGG e vÃ­deos MP4/WebM/MOV (20 MB).
+- Storage privado, prÃ©via de imagens e vÃ­deos e reproduÃ§Ã£o de Ã¡udio por links temporÃ¡rios.
 - Menu lateral retrÃ¡til, preferÃªncia persistida e navegaÃ§Ã£o mÃ³vel.
 - EstatÃ­sticas das tarefas atuais, com contadores e grÃ¡fico acessÃ­vel.
 - RLS para tarefas, registros de anexos e arquivos.
@@ -43,10 +43,12 @@ No SQL Editor do Supabase, aplique **na ordem, uma vez cada**:
 
 1. [Tabela tasks e RLS](supabase/migrations/202609210001_tasks.sql).
 2. [Anexos e Storage privado](supabase/migrations/202609220001_attachments.sql).
-3. [Valida??o de uploads](supabase/migrations/202609220002_storage_upload_validation.sql).
-4. [Compatibilidade do upload no navegador](supabase/migrations/202609220004_storage_browser_compatibility.sql).
+3. [ValidaÃ§Ã£o de uploads](supabase/migrations/202609220002_storage_upload_validation.sql).
+4. [PolÃ­tica de prÃ©-envio](supabase/migrations/202609220003_storage_preflight_policy.sql).
+5. [Compatibilidade do upload no navegador](supabase/migrations/202609220004_storage_browser_compatibility.sql).
+6. [Anexos de vÃ­deo](supabase/migrations/202609220005_video_attachments.sql).
 
-Se vocÃª jÃ¡ usa a versÃ£o original, execute **somente a segunda migraÃ§Ã£o**. Elas preservam as tarefas existentes.
+Em um projeto novo, execute as seis migraÃ§Ãµes. Se o projeto jÃ¡ estÃ¡ atualizado com imagens e Ã¡udios, execute somente a sexta. Se possui apenas a tabela de tarefas, execute da segunda atÃ© a sexta. Todas preservam as tarefas e os anexos existentes.
 
 Em Authentication, habilite Email e configure:
 
